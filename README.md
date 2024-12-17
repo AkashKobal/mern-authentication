@@ -1,181 +1,144 @@
 # MERN Authentication System
 
-This project is a **MERN stack** authentication system, enabling user registration, login, email verification via OTP, and session management using JSON Web Tokens (JWT).
+A secure and scalable authentication system built using the MERN stack (MongoDB, Express.js, React.js, Node.js). This project supports user registration, login, logout, OTP-based email verification, and JWT-based authentication.
 
 ## Features
-- User registration with hashed passwords (using `bcrypt`).
-- Secure user login with JWT-based authentication.
-- Email verification with OTP (via `nodemailer`).
-- Token-based authentication and authorization.
-- MongoDB integration for user data storage.
 
-## Prerequisites
+- **User Registration**: Securely register new users with hashed passwords.
+- **User Login**: Authenticate users with email and password.
+- **JWT Authentication**: Issue JSON Web Tokens for session management.
+- **Email Verification**: Send OTP to users for account verification.
+- **Protected Routes**: Middleware to secure endpoints.
+- **Role-based Access**: User roles (e.g., admin, user).
+- **Password Reset**: OTP-based password reset functionality.
 
-Ensure the following tools are installed on your system:
+---
 
-- [Node.js](https://nodejs.org/)
-- [MongoDB](https://www.mongodb.com/try/download/community)
-- [Postman](https://www.postman.com/) (for API testing)
+## Tech Stack
+
+### Backend
+- **Node.js**: JavaScript runtime for server-side logic.
+- **Express.js**: Web framework for routing and middleware.
+- **MongoDB**: NoSQL database for data storage.
+- **Mongoose**: ODM for MongoDB.
+
+### Security & Utilities
+- **bcrypt**: Hashing library for password security.
+- **jsonwebtoken**: For issuing and verifying tokens.
+- **Joi**: Schema validation for inputs.
+- **Nodemailer**: For sending emails.
+- **dotenv**: Environment variable management.
+
+---
 
 ## Installation
 
-### Backend Setup
-1. Clone the repository:
+### Prerequisites
+- Node.js and npm installed.
+- MongoDB installed and running locally or a cloud MongoDB URI.
+
+### Steps
+
+1. **Clone the Repository**
    ```bash
-   git clone <repository_url>
-   cd server
+   git clone https://github.com/AkashKobal/mern-authentication.git
+   cd mern-authentication
    ```
 
-2. Install dependencies:
+2. **Install Dependencies**
    ```bash
    npm install
    ```
 
-3. Create a `.env` file in the root directory and add the following environment variables:
-   ```env
-   PORT=5000
-   MONGO_URI=<your_mongodb_connection_string>
-   JWT_SECRET=<your_jwt_secret>
-   SENDER_EMAIL=<your_email>
-   EMAIL_PASSWORD=<your_email_password>
+3. **Environment Variables**
+   Create a `.env` file in the root directory and configure the following variables:
+   ```
+   MONGO_URI=your-mongo-db-uri
+   JWT_SECRET=your-jwt-secret
+   SENDER_EMAIL=your-email
+   SENDER_PASSWORD=your-email-password
+   NODE_ENV=development
    ```
 
-4. Start the development server:
+4. **Run the Server**
    ```bash
    npm run server
    ```
 
-## Package Overview
-
-### Dependencies
-- **bcrypt**: Password hashing.
-- **cookie-parser**: Middleware to parse cookies in requests.
-- **cors**: Enable Cross-Origin Resource Sharing.
-- **dotenv**: Load environment variables from a `.env` file.
-- **express**: Web framework for building APIs.
-- **joi**: Data validation for user inputs.
-- **jsonwebtoken**: Generate and verify JWT tokens.
-- **mongoose**: ODM library for MongoDB.
-- **nodemailer**: Send emails for OTP verification.
-
-### Dev Dependencies
-- **nodemon**: Automatically restart the server during development.
+---
 
 ## API Endpoints
 
-### 1. **User Registration**
-**POST** `/api/auth/register`
-- **Description**: Register a new user.
-- **Request Body**:
-  ```json
-  {
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "securepassword"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "success": true,
-    "message": "User registered successfully. Please verify your email."
-  }
-  ```
+### Authentication Routes
 
-### 2. **User Login**
-**POST** `/api/auth/login`
-- **Description**: Log in an existing user.
-- **Request Body**:
-  ```json
-  {
-    "email": "john@example.com",
-    "password": "securepassword"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "success": true,
-    "token": "<jwt_token>"
-  }
-  ```
+- **POST** `http://localhost:5000/api/auth/register`
+  - Registers a new user.
+  - Required Fields: `name`, `email`, `password`.
 
-### 3. **Send OTP**
-**POST** `/api/auth/send-otp`
-- **Description**: Send an OTP to the user's registered email.
-- **Headers**:
-  ```json
-  {
-    "Authorization": "Bearer <jwt_token>"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "success": true,
-    "message": "OTP sent successfully."
-  }
-  ```
+- **POST** `http://localhost:5000/api/auth/login`
+  - Authenticates an existing user.
+  - Required Fields: `email`, `password`.
 
-### 4. **Verify OTP**
-**POST** `/api/auth/verify-otp`
-- **Description**: Verify the OTP sent to the user's email.
-- **Request Body**:
-  ```json
-  {
-    "otp": "123456"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "success": true,
-    "message": "Account verified successfully."
-  }
-  ```
+- **POST** `http://localhost:5000/api/auth/logout`
+  - Logs out the user by clearing the token.
 
-### 5. **Get User Details**
-**GET** `/api/auth/me`
-- **Description**: Fetch the authenticated user's details.
-- **Headers**:
-  ```json
-  {
-    "Authorization": "Bearer <jwt_token>"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-    "success": true,
-    "user": {
-      "id": "<user_id>",
-      "name": "John Doe",
-      "email": "john@example.com"
-    }
-  }
-  ```
+- **POST** `http://localhost:5000/api/auth/send-otp`
+  - Sends OTP for email verification.
+  - Required Fields: `userId`.
 
-## File Structure
+- **POST** `http://localhost:5000/api/auth/verify-otp`
+  - Verifies email using OTP.
+  - Required Fields: `otp`, `userId`.
+
+- **GET** `http://localhost:5000/api/auth/is-authenticated`
+  - Checks if the user is authenticated.
+  - Requires a valid JWT token.
+
+---
+
+## Project Structure
+
 ```
-server/
-├── server.js         # Entry point of the application
-├── models/           # Mongoose models
-├── routes/           # API routes
-├── controllers/      # Route handlers
-├── middleware/       # Custom middleware (e.g., authentication)
-├── utils/            # Utility functions (e.g., email handling)
-└── .env              # Environment variables
+/server
+  |-- /Controllers      # Business logic for routes
+  |-- /Middleware       # Middleware for validation and authentication
+  |-- /Models           # Mongoose schemas for database
+  |-- /Routes           # API endpoints
+  |-- /Config           # Configuration files (e.g., nodemailer, database)
+  |-- server.js         # Main entry point
 ```
+
+---
+
+## Middleware
+
+- **Validation Middleware**:
+  - `registerValidation`: Validates user registration inputs.
+  - `loginValidation`: Validates login inputs.
+
+- **Authentication Middleware**:
+  - `userAuth`: Validates JWT tokens and protects routes.
+
+---
 
 ## Future Enhancements
-- Add refresh tokens for enhanced security.
-- Implement role-based access control (RBAC).
-- Add social login integration (Google, Facebook).
-- Improve email templates using HTML.
+
+- Password reset functionality.
+- Enhanced role-based access control (RBAC).
+- Integration with frontend (React.js).
+- Rate limiting and advanced security features.
+
+---
 
 ## Contributing
-Feel free to contribute by submitting issues or pull requests.
+
+Contributions are welcome! Please fork the repository and submit a pull request for any changes.
+
+---
 
 ## License
+
 This project is licensed under the [MIT License](LICENSE).
+
+---
 
