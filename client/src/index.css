@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: radial-gradient( circle farthest-corner at 48.4% 47.5%,  rgba(122, 184, 255, 0.61) 0%, rgba(21, 84, 161, 0.61) 90% );
+
 }
 
 code {
