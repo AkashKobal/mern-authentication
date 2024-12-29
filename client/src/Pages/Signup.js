@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import '../App.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 
 
 
@@ -12,16 +13,23 @@ const Signup = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const navigate = useNavigate();
 
-    const handelSignUp = (e) => {
+    const handelSignUp = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
             toast.error("Password not matched");
         }
         else {
-            toast.success("Registration successful");
-            console.log(name,email,password);
-            navigate('/login')
-            
+            await axios.post('http://localhost:5000/api/auth/register', { name, email, password })
+                .then((response) => {
+                    console.log(response.data);
+                    toast.success(response.data.message);
+                    console.log(name, email, password);
+                    navigate('/login')
+                })
+                .catch((error) => {
+                    console.log(error);
+                    toast.error(error.response.data.message);
+                });
         }
 
     }
